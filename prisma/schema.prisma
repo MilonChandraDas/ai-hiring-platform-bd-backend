@@ -1,0 +1,211 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                  String        @id @default(uuid())
+  username            String        @unique
+  email               String        @unique
+  password            String
+  role                Role          @default(CANDIDATE)
+  profileImage        String?
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+  job                 Job[]
+  resumes             Resume[]
+  applications        Application[]
+  candidateInterviews Interview[]   @relation("CandidateInterviews")
+  recruiterInterviews Interview[]   @relation("RecruiterInterviews")
+  codingTests         CodingTest[]
+  companies Company[]
+}
+
+enum Role {
+  CANDIDATE
+  RECRUITER
+  ADMIN
+}
+
+model Company {
+  id          String      @id @default(uuid())
+  name        String
+  email       String      @unique
+  website     String?
+  location    String?
+  type        CompanyType @default(STARTUP)
+  phone       String?
+  description String?
+  logo        String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  job         Job[]
+
+  recruiterId String?
+  recruiter   User?       @relation(fields: [recruiterId], references: [id])
+}
+
+enum CompanyType {
+  STARTUP
+  SME
+  ENTERPRISE
+  AGENCY
+  REMOTE
+}
+
+model Job {
+  id           String        @id @default(uuid())
+  title        String
+  description  String
+  role         String
+  salary       String?
+  location     String?
+  banner       String?
+  jobType      JobType       @default(FULL_TIME)
+  experience   Experience    @default(JUNIOR)
+  status       JobStatus     @default(ACTIVE)
+  deadline     DateTime?
+  companyId    String
+  company      Company       @relation(fields: [companyId], references: [id])
+  recruiterId  String
+  recruiter    User          @relation(fields: [recruiterId], references: [id])
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  applications Application[]
+  codingTests  CodingTest[]
+}
+
+enum JobType {
+  FULL_TIME
+  PART_TIME
+  REMOTE
+  CONTRACT
+  INTERNSHIP
+}
+
+enum Experience {
+  JUNIOR
+  MID
+  SENIOR
+}
+
+enum JobStatus {
+  ACTIVE
+  CLOSED
+  DRAFT
+}
+
+model Resume {
+  id             String        @id @default(uuid())
+  userId         String // user theke nibe
+  user           User          @relation(fields: [userId], references: [id])
+  name           String
+  email          String
+  phone          String
+  about          String?
+  education      String
+  experience     String?
+  expectedSalary String?
+  skill          String[]
+  resumeUrl      String?
+  atsScore       Int?
+  aiReview       String?
+  status         ResumeStatus  @default(ACTIVE)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  applications   Application[]
+}
+
+enum ResumeStatus {
+  ACTIVE
+  INACTIVE
+}
+
+model Application {
+  id          String            @id @default(uuid())
+  userId      String
+  user        User              @relation(fields: [userId], references: [id])
+  jobId       String
+  job         Job               @relation(fields: [jobId], references: [id])
+  resumeId    String
+  resume      Resume            @relation(fields: [resumeId], references: [id])
+  coverLetter String?
+  status      ApplicationStatus @default(PENDING)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  interviews  Interview[]
+}
+
+enum ApplicationStatus {
+  PENDING
+  REVIEWED
+  SHORTLISTED
+  REJECTED
+  HIRED
+}
+
+model Interview {
+  id            String          @id @default(uuid())
+  applicationId String
+  application   Application     @relation(fields: [applicationId], references: [id])
+  candidateId   String
+  candidate     User            @relation("CandidateInterviews", fields: [candidateId], references: [id])
+  recruiterId   String
+  recruiter     User            @relation("RecruiterInterviews", fields: [recruiterId], references: [id])
+  scheduledAt   DateTime
+  duration      Int             @default(60)
+  type          InterviewType   @default(ONLINE)
+  status        InterviewStatus @default(SCHEDULED)
+  meetingLink   String?
+  notes         String?
+  aiQuestion    String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+}
+
+enum InterviewType {
+  ONLINE
+  OFFLINE
+  PHONE
+}
+
+enum InterviewStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
+model CodingTest {
+  id              String           @id @default(uuid())
+  candidateId     String
+  candidate       User             @relation(fields: [candidateId], references: [id])
+  jobId           String
+  job             Job              @relation(fields: [jobId], references: [id])
+  title           String
+  mcqQuestion     String?
+  problemQuestion String?
+  language        String           @default("javascript")
+  code            String?
+  score           Int?
+  timeTaken       Int?
+  timeLimit       Int              @default(60)
+  result          TestResult?
+  status          CodingTestStatus @default(PENDING)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+}
+
+enum TestResult {
+  PASS
+  FAIL
+}
+
+enum CodingTestStatus {
+  PENDING
+  COMPLETED
+  EXPIRED
+}
