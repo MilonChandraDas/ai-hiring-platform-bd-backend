@@ -7,17 +7,16 @@ export class ApplicationsService {
   constructor(private prismaService: PrismaService) {}
 
   async createApplication(dto: CreateApplicationDto, userId: string) {
-
     const existingApplication = await this.prismaService.application.findFirst({
       where: {
         userId: userId,
         jobId: dto.jobId,
-      }
-    })
+      },
+    });
     if (existingApplication) {
       throw new BadRequestException('You have already applied for this job.');
     }
-    
+
     return this.prismaService.application.create({
       data: {
         userId: userId,
@@ -42,6 +41,26 @@ export class ApplicationsService {
             },
           },
         },
+      },
+    });
+  }
+
+  async getApplicationsForRecruiter(recruiterId: string) {
+    return this.prismaService.application.findMany({
+      where: {
+        job: {
+          recruiterId: recruiterId,
+        },
+      },
+
+      include: {
+        user: {
+          select: { id: true, username: true, email: true },
+        },
+        job: {
+          select: { title: true, company: { select: { name: true } } },
+        },
+        resume: true,
       },
     });
   }
