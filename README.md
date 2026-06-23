@@ -1,174 +1,176 @@
-# 🤖 AI Developer Hiring Platform — Backend
+# 🤖 AI Hiring Platform — Backend
 
-A production-ready, AI-powered hiring platform built with NestJS, PostgreSQL, and Gemini AI.
+A robust REST API for an AI-powered hiring platform built with **NestJS** and **TypeScript**. Features JWT authentication, AI resume analysis via Google Gemini, file uploads via Cloudinary, and a PostgreSQL database managed with Prisma ORM.
 
-## 🌐 Live Demo
-
-- **Frontend:** https://ai-hiring-platform-frontend.vercel.app
-- **Backend API:** https://ai-hiring-platform-backend-1.onrender.com
-
----
-
-## 🚀 Tech Stack
-
-| Layer | Technology |
-|-------|-----------|
-| Framework | NestJS + TypeScript |
-| Database | PostgreSQL + Prisma ORM |
-| Authentication | JWT + bcrypt |
-| AI | Google Gemini API |
-| File Storage | Cloudinary |
-| Deployment | Render |
+🔗 **Live API:** [ai-hiring-platform-bd-backend.onrender.com](https://ai-hiring-platform-bd-backend.onrender.com)  
+🔗 **Frontend Repo:** [ai-hiring-platform-bd](https://github.com/MilonChandraDas/ai-hiring-platform-bd)  
+🔗 **API Docs (Swagger):** [/api](https://ai-hiring-platform-bd-backend.onrender.com/api)
 
 ---
 
 ## ✨ Features
 
-- ✅ **Role-based Authentication** — Candidate, Recruiter, Admin
-- ✅ **Company Management** — Create and manage company profiles
-- ✅ **Job Posting** — Post, list, and filter job openings
-- ✅ **Resume System** — Upload CV with Cloudinary, AI-powered ATS scoring
-- ✅ **Application Tracking** — Apply for jobs, track application status
-- ✅ **Interview Scheduling** — Schedule and manage interviews
-- ✅ **Coding Tests** — Create and manage coding assessments
-- ✅ **AI Resume Analysis** — Gemini AI analyzes resumes and gives ATS score + feedback
+- 🔐 JWT Authentication with bcrypt password hashing
+- 🤖 AI Resume Analysis with Google Gemini (ATS Score + Feedback)
+- 📁 PDF Resume Upload via Cloudinary
+- 🏢 Company & Job Management
+- 📋 Application Tracking System
+- 🎙️ Interview Scheduling
+- 📚 Swagger API Documentation
 
 ---
 
-## 📊 Database Schema
+## 🛠️ Tech Stack
 
-```
-Users ──────── Resumes
-  │               │
-  ├── Jobs ────── Applications
-  │       │           │
-  │    Companies   Interviews
-  │
-  └── CodingTests
-```
-
-**Tables:** users, companies, jobs, resumes, applications, interviews, coding_tests
-
----
-
-## 🔑 API Endpoints
-
-### Auth
-```
-POST /auth/register   — Register new user
-POST /auth/login      — Login and get JWT token
-```
-
-### Users
-```
-GET    /users/me      — Get current user profile
-PATCH  /users/me      — Update profile
-```
-
-### Companies
-```
-POST   /companies     — Create company (Recruiter only)
-GET    /companies     — List all companies
-```
-
-### Jobs
-```
-POST   /jobs          — Post a job (Recruiter only)
-GET    /jobs          — List all jobs
-GET    /jobs/:id      — Get job details
-```
-
-### Resumes
-```
-POST   /resumes       — Create resume + AI analysis
-GET    /resumes/me    — Get my resumes
-```
-
-### Applications
-```
-POST   /applications      — Apply for a job
-GET    /applications/me   — Get my applications
-```
-
-### Interviews
-```
-POST   /interviews        — Schedule interview
-GET    /interviews/me     — Get my interviews
-```
-
-### Coding Tests
-```
-POST   /coding-tests      — Create coding test
-GET    /coding-tests/me   — Get my tests
-```
+| Technology | Purpose |
+|------------|---------|
+| NestJS | Node.js framework |
+| TypeScript | Type safety |
+| PostgreSQL | Database |
+| Prisma ORM v6 | Database management |
+| JWT + bcrypt | Authentication |
+| Google Gemini AI | Resume analysis |
+| Cloudinary | File storage |
+| Swagger | API documentation |
+| pdf-parse | PDF text extraction |
 
 ---
 
-## ⚙️ Local Setup
+## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js v18+
-- PostgreSQL
-- Git
+- Node.js v20+
+- PostgreSQL database
 
 ### Installation
 
 ```bash
-# Clone the repo
-git clone https://github.com/MilonDas22/ai-hiring-platform-backend.git
-cd ai-hiring-platform-backend
+# Clone the repository
+git clone https://github.com/MilonChandraDas/ai-hiring-platform-bd-backend.git
+cd ai-hiring-platform-bd-backend
 
 # Install dependencies
 npm install
 
-# Setup environment variables
+# Create environment file
 cp .env.example .env
-# Fill in your .env values
-
-# Setup database
-npx prisma db push
-
-# Run development server
-npm run start:dev
 ```
 
 ### Environment Variables
 
+Create a `.env` file:
+
 ```env
-DATABASE_URL=postgresql://user:password@localhost:5432/ai_hiring_platform
-JWT_SECRET=your_jwt_secret
-GEMINI_API_KEY=your_gemini_api_key
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
+DATABASE_URL="postgresql://user:password@host/dbname"
+JWT_SECRET="your-jwt-secret"
+GEMINI_API_KEY="your-gemini-api-key"
+CLOUDINARY_CLOUD_NAME="your-cloud-name"
+CLOUDINARY_API_KEY="your-api-key"
+CLOUDINARY_API_SECRET="your-api-secret"
+```
+
+### Database Setup
+
+```bash
+# Generate Prisma client
+npx prisma generate
+
+# Push schema to database
+npx prisma db push
+
+# (Optional) Open Prisma Studio
+npx prisma studio
+```
+
+### Run Development Server
+
+```bash
+npm run start:dev
+```
+
+API will be available at [http://localhost:3000](http://localhost:3000)  
+Swagger docs at [http://localhost:3000/api](http://localhost:3000/api)
+
+---
+
+## 📁 Project Structure
+
+```
+src/
+├── auth/                   # JWT auth, login, register
+├── users/                  # User management
+├── companies/              # Company CRUD
+├── jobs/                   # Job postings
+├── resumes/                # Resume upload + AI analysis
+├── applications/           # Job applications
+├── interviews/             # Interview scheduling
+├── ai/                     # Gemini AI integration
+├── prisma/                 # Prisma service
+└── main.ts
+prisma/
+└── schema.prisma           # Database schema
 ```
 
 ---
 
-## 🏗️ Project Structure
+## 📡 API Endpoints
 
-```
-src/
-├── auth/           — Authentication (JWT, bcrypt)
-├── users/          — User profile management
-├── companies/      — Company CRUD
-├── jobs/           — Job posting and listing
-├── resumes/        — Resume with AI analysis
-├── applications/   — Job applications
-├── interviews/     — Interview scheduling
-├── coding-tests/   — Coding assessments
-├── ai/             — Gemini AI integration
-├── cloudinary/     — File upload service
-└── prisma/         — Database service
+### Auth
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/auth/register` | Register new user |
+| POST | `/auth/login` | Login user |
+
+### Companies
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/companies` | Create company |
+| GET | `/companies` | Get all companies |
+| GET | `/companies/my-company` | Get my company |
+
+### Jobs
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/jobs` | Post a job |
+| GET | `/jobs` | Get all jobs |
+| GET | `/jobs/:id` | Get job by ID |
+
+### Applications
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/applications` | Apply to job |
+| GET | `/applications/me` | My applications |
+| GET | `/applications/recruiter` | Recruiter's applications |
+
+### Interviews
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/interviews` | Schedule interview |
+| GET | `/interviews/me` | My interviews |
+
+### Resumes
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/resumes` | Create resume (with AI analysis) |
+| GET | `/resumes/me` | My resumes |
+
+---
+
+## 🌐 Deployment
+
+Deployed on **Render** with a managed PostgreSQL database.
+
+```bash
+# Build for production
+npm run build
+
+# Start production server
+npm run start:prod
 ```
 
 ---
 
 ## 👨‍💻 Author
 
-Built by **Milon Das** as a production-ready portfolio project demonstrating:
-- Full-stack development
-- AI integration
-- Scalable backend architecture
-- Database design
-- Cloud deployment
+**Milon Chandra Das**  
+GitHub: [@MilonChandraDas](https://github.com/MilonChandraDas)
