@@ -186,15 +186,26 @@ model CodingTest {
   jobId           String
   job             Job              @relation(fields: [jobId], references: [id])
   title           String
-  mcqQuestion     String?
-  problemQuestion String?
   language        String           @default("javascript")
-  code            String?
-  score           Int?
+  
+  // MCQ
+  mcqQuestions    Json?            // AI generated 10 MCQ with options+answer
+  mcqSubmission   Json?            // candidate er selected answers
+  mcqScore        Int?             // 10 এর মধ্যে কত
+
+  // Coding
+  codingProblems  Json?            // AI generated 3 problems
+  codeSubmissions Json?            // 3টা code
+  codeResult      Json?            // AI check result per problem
+
+  // Result
+  totalScore      Int?             
+  aiFeedback      String?          
   timeTaken       Int?
   timeLimit       Int              @default(60)
   result          TestResult?
   status          CodingTestStatus @default(PENDING)
+  
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
 }
